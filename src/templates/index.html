@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Background with Hindi Text</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Devanagari:wght@100..800&display=swap" rel="stylesheet">
+
+
+    <style>
+      body{
+        /* overflow: hidden; */
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        user-select: none;
+      }
+        .background-grad {
+          position: absolute;
+/* left: -3.19%;
+right: -2.85%;
+top: -4.67%;
+bottom: -4.33%; */
+
+
+width: 100%;
+height: 100%;
+
+overflow: hidden;
+
+opacity: 20;
+background: radial-gradient(50% 50% at 50% 50%, #FFFFFF 0%, #88C3EB 67.1%);
+
+        }
+        .overlay-text {
+          color: #00158F36;
+          /* background: #00158F36; */
+          font-family: "Anek Devanagari", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+    mix-blend-mode: normal; /* Prevents doubling opacity */
+
+            font-size: 10vw;
+            font-weight: bold;
+            z-index: 10;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-style: normal;
+font-weight: 600;
+font-size: 580px;
+/* or 835px */
+display: flex;
+align-items: center;
+text-align: center;
+letter-spacing: -0.02em;
+
+color: rgba(0, 21, 143);
+
+overflow: hidden;
+
+opacity: 0.15;
+
+filter:blur(4px);
+
+        }
+
+        /* Vector */
+.center-block{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 35%;
+  height: 42%;
+  display: flex;
+  flex-direction: column;
+  z-index: 20;
+
+}
+
+.block1{
+  color:  #005DAA;
+
+
+  font-family: Poppins;
+font-size: 72px;
+font-weight: 700;
+line-height: 69.12px;
+letter-spacing: -0.02em;
+text-align: center;
+text-underline-position: from-font;
+text-decoration-skip-ink: none;
+padding-top: 0.3em;
+}
+
+.block2{
+  font-family: Poppins;
+font-size: 24px;
+font-weight: 400;
+line-height: 32px;
+text-align: center;
+text-underline-position: from-font;
+text-decoration-skip-ink: none;
+
+padding: 1em;
+
+}
+
+.block3{
+  display: flex;
+  gap: 32px;
+  justify-content: center;
+}
+
+
+
+
+
+/* new */
+
+
+
+.button {
+  border: 1px solid #323C50;
+  border-radius: 50px;
+  width: 100px;
+
+
+  display: block;
+
+  background: linear-gradient(to right, white 50%, #323C50 50%);
+  background-size: 200% 100%;
+  background-position: right bottom;
+  transition: all .5s ease-out;
+  width: 100%;
+}
+
+.button {
+  border: 1px solid #323C50;
+  border-radius: 50px;
+  width: 100px;
+
+
+  display: block;
+
+  background: linear-gradient(to right, white 50%, #323C50 50%);
+  background-size: 200% 100%;
+  background-position: right bottom;
+  transition: all .5s ease-out;
+  width: 100%;
+}
+
+.button:hover {
+  background-position: left bottom;
+}
+
+.outer{
+  text-decoration: none;
+}
+
+.text {
+  text-align: center;
+  font-size: 16px;
+  line-height: 30px; 
+  color: white;
+  transition: all .6s ease-out;
+  display: block;
+  width: 100px;
+  padding: 8px 25px 8px 25px;
+}
+
+.text:hover {
+  color: #323C50;  
+}
+    </style>
+</head>
+<body>
+
+
+
+  <div class="background-grad"></div>
+
+  <div class="overlay-text">Farmify</div>
+
+  <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="overlay-text">
+    <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle">उत्कृष्ट</text>
+  </svg> -->
+
+  <div class="center-block">
+
+    <div class="block1">Farmify - 2024</div>
+    <div class="block2">Don't miss this chance to explore cutting-edge research, work with brilliant minds, and make an impact!</div>
+    <div class="block3">
+      <a href="{{ url_for('auth.login') }}" class="outer"><div class="button "><div class="text">Consumer login</div></div></a>
+      <a href="{{ url_for('auth.login') }}" class="outer"><div class="button "><div class="text">Producer login</div></div></a>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

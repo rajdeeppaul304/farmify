@@ -1,0 +1,88 @@
+{% extends 'layout_.html' %}
+
+{% block content %}
+<div style="background-color: aqua;">
+
+
+<h1>Product List</h1>
+
+{% if products %}
+  <table >
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Quantity</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product in products_dict %}
+        <tr>
+          <!-- Update the form action to include product_id in the URL -->
+          <form action="{{ url_for('consumer.add_to_cart', product_id=product.id, quantity_added=request.form['quantity']|default(1)) }}" method="POST">
+            
+            <td>{{ product.title }}</td>
+            <td>{{ product.description }}</td>
+            
+            <!-- Quantity input field -->
+            <td><input type="number" id="quantity" name="quantity"  min="0" max="100"></td>
+
+            <!-- Submit button to add product to cart -->
+            <td><button type="submit">Add to Cart</button></td>
+
+          </form>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>No products found.</p>
+{% endif %}
+
+</div>
+
+
+
+
+<div style="background-color: red;">
+
+    <h1>Your Cart</h1>
+    <div id="cart-items">
+        <!-- Cart items will be displayed here -->
+    </div>
+    
+</div>
+
+
+
+
+
+
+<script>
+    // Fetch cart items from the route
+    fetch('/consumer/cart_items')
+        .then(response => response.json())
+        .then(data => {
+            const cartItemsContainer = document.getElementById('cart-items');
+            if (data.length === 0) {
+                cartItemsContainer.innerHTML = '<p>Your cart is empty.</p>';
+            } else {
+                data.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.innerHTML = `
+                        <h3>${item.title}</h3>
+                        <p>${item.description}</p>
+                        <p>Quantity: ${item.quantity}</p>
+                    `;
+                    cartItemsContainer.appendChild(itemDiv);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching cart items:', error);
+        });
+</script>
+
+
+{% endblock %}

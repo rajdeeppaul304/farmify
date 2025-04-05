@@ -1,0 +1,14 @@
+__pycache__/
+instance
+node_modules/
+env/
+temp.py
+.venv/
+migrations/
+.env
+proposals
+upload_id_card
+test.py
+pdf_processing
+database.db
+uploads

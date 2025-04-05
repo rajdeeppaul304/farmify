@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart Items</title>
+</head>
+<body>
+    <h1>Your Cart</h1>
+    <div id="cart-items">
+        <!-- Cart items will be displayed here -->
+    </div>
+
+    <script>
+      // Fetch cart items from the route
+      fetch('/cart_items')
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error('Network response was not ok ' + response.statusText);
+              }
+              return response.json();
+          })
+          .then(data => {
+              const cartItemsContainer = document.getElementById('cart-items');
+              if (data.length === 0) {
+                  cartItemsContainer.innerHTML = '<p>Your cart is empty.</p>';
+              } else {
+                  data.forEach(item => {
+                      const itemDiv = document.createElement('div');
+                      itemDiv.innerHTML = `
+                          <h3>${item.title}</h3>
+                          <p>${item.description}</p>
+                          <p>Quantity: ${item.quantity}</p>
+                      `;
+                      cartItemsContainer.appendChild(itemDiv);
+                  });
+              }
+          })
+          .catch(error => {
+              console.error('Error fetching cart items:', error);
+          });
+  </script>
+  </body>
+</html>

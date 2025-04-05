@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+</head>
+<body class="bg-gray-100 flex justify-center items-center min-h-screen flex-col">
+
+  <form action="{{ url_for('auth.login') }}" method="post" class="w-full max-w-xl mx-4 sm:mx-6 lg:mx-auto mt-10 p-6 rounded-lg ">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="w-full max-w-lg mx-auto mb-4">
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} mb-4 p-4 rounded-lg 
+              {% if category == 'error' %}bg-red-100 text-red-700 border border-red-300{% endif %}
+              {% if category == 'success' %}bg-green-100 text-green-700 border border-green-300{% endif %}">
+            <strong>{{ message }}</strong>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+    <div class="mb-6 text-4xl font-bold">
+      <div>
+        Log in
+      </div>
+    
+    </div>
+    <!-- User ID Field -->
+    <div class="mb-4">
+      <label for="user_id" class="block text-gray-700 text-sm font-bold mb-2 " style="color: #666666;">User id</label>
+      <input type="text" name="user_id" id="user_id" class="appearance-none bg-transparent border-2 w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none rounded-xl" style="border-color: #66666659;" required placeholder="Enter your User Id" />
+    </div>
+
+    <!-- Password Field -->
+    <div class="mb-6">
+      <div class="flex justify-between items-center">
+        <label for="password" class="text-gray-700 text-sm font-bold mb-2">Password</label>
+        <div id="eye-icon" class="cursor-pointer text-gray-600 text-xl mb-2 ">
+          <i class="fas fa-eye"></i>
+        </div>
+      </div>
+      <input type="password" name="password" id="password" class="appearance-none bg-transparent border-2 w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none rounded-xl border-gray-300" style="border-color: #66666659;" required placeholder="Enter your password" />
+    </div>
+
+    <!-- Submit Button -->
+    <div class="flex items-center justify-between">
+      <button type="submit" class="bg-black hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-3xl  focus:outline-none focus:shadow-outline w-full">
+        Log in
+      </button>
+    </div>
+
+    <!-- Forgot password and Sign up links -->
+    <div class="text-center mt-4">
+      <a href="#" class="text-sm text-gray-500 underline">Forgot your password?</a>
+    </div>
+    <div class="text-center mt-2">
+      <p class="text-sm text-gray-600">Don’t have an account? <a href="{{ url_for('auth.signup') }}" class="text-blue-500 underline">Sign up</a></p>
+    </div>
+  </form>
+
+  <script>
+// JavaScript to toggle password visibility and disable login button
+const eyeIcon = document.getElementById('eye-icon');
+const passwordField = document.getElementById('password');
+const userIdField = document.getElementById('user_id');
+const loginButton = document.querySelector('button[type="submit"]');
+
+// Function to check if both fields are filled
+function toggleLoginButton() {
+  if (userIdField.value.trim() === '' || passwordField.value.trim() === '') {
+    loginButton.disabled = true;
+    loginButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+    loginButton.classList.remove('bg-black', 'hover:bg-gray-600');
+  } else {
+    loginButton.disabled = false;
+    loginButton.classList.add('bg-black', 'hover:bg-gray-600');
+    loginButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
+  }
+}
+
+// Event listener to check fields on input
+userIdField.addEventListener('input', toggleLoginButton);
+passwordField.addEventListener('input', toggleLoginButton);
+
+// JavaScript to toggle password visibility
+eyeIcon.addEventListener('click', () => {
+  // Check the current input type
+  const currentType = passwordField.type;
+
+  if (currentType === 'password') {
+    passwordField.type = 'text'; // Change to text to show password
+    eyeIcon.innerHTML = '<i class="fas fa-eye-slash"></i>'; // Change icon to closed eye
+  } else {
+    passwordField.type = 'password'; // Change to password to hide password
+    eyeIcon.innerHTML = '<i class="fas fa-eye"></i>'; // Change icon to open eye
+  }
+});
+
+// Initial check on page load to ensure the button state is correct
+toggleLoginButton();
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+<body>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="alert-container">
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                <strong>{{ message }}</strong>
+            </div>
+        {% endfor %}
+    </div>
+  {% endif %}
+  {% endwith %}
+
+  <form action="{{ url_for('auth.signup') }}" method="post">
+
+    <div>
+      <label for="name">Enter Name</label>
+      <input type="text" name="name" id="name" required />
+    </div>
+
+    <div>
+      <label for="password1">Enter Password</label>
+      <input type="password" name="password1" id="password1" required />
+    </div>
+
+    <div>
+      <label for="password2">Re-Enter Password</label>
+      <input type="password" name="password2" id="password2" required />
+    </div>
+
+    <div id="producer-fields" class="hidden">
+      <div>
+        <label for="email">Enter Email</label>
+        <input type="email" name="email" id="email" required />
+      </div>
+
+      <div>
+        <label for="producer_id">Producer ID</label>
+        <input type="text" name="producer_id" id="producer_id" required />
+      </div>
+    </div>
+
+    <div id="consumer-fields" class="hidden">
+      <div>
+        <label for="consumer_id">Consumer ID</label>
+        <input type="text" name="consumer_id" id="consumer_id" required />
+      </div>
+    </div>
+
+    <div>
+      <label for="userrole">Select Role</label>
+      <select name="userrole" id="userrole" onchange="toggleFields()">
+        <option value="producer">Producer</option>
+        <option value="consumer">Consumer</option>
+      </select>
+    </div>
+
+    <div>
+      <button type="submit">Submit</button>
+    </div>
+
+    <div>
+      <p>Already have an account? <a href="{{ url_for('auth.login') }}">Login</a></p>
+    </div>
+
+  </form>
+
+  <script>
+    function toggleFields() {
+      const role = document.getElementById("userrole").value;
+      const producerFields = document.getElementById("producer-fields");
+      const consumerFields = document.getElementById("consumer-fields");
+
+      producerFields.classList.add("hidden");
+      consumerFields.classList.add("hidden");
+
+      // Remove all required fields initially
+      document.getElementById("email").removeAttribute("required");
+      document.getElementById("producer_id").removeAttribute("required");
+      document.getElementById("consumer_id").removeAttribute("required");
+
+      if (role === "producer") {
+        producerFields.classList.remove("hidden");
+        document.getElementById("email").setAttribute("required", "required");
+        document.getElementById("producer_id").setAttribute("required", "required");
+      } else if (role === "consumer") {
+        consumerFields.classList.remove("hidden");
+        document.getElementById("consumer_id").setAttribute("required", "required");
+      }
+    }
+
+    window.onload = function() {
+      toggleFields();
+    };
+  </script>
+
+</body>
+</html>
