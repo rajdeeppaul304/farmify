@@ -5,72 +5,87 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Signup</title>
   <script src="https://cdn.tailwindcss.com"></script>
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body>
+<body class="bg-gray-100 flex justify-center items-center min-h-screen flex-col">
 
-  {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <div class="alert-container">
-        {% for category, message in messages %}
-            <div class="alert alert-{{ category }}">
-                <strong>{{ message }}</strong>
+  <form action="{{ url_for('auth.signup') }}" method="post" class="w-full max-w-xl mx-4 sm:mx-6 lg:mx-auto mt-10 p-6  rounded-lg ">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="w-full max-w-lg mx-auto mb-4">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} mb-4 p-4 rounded-lg 
+                {% if category == 'error' %}bg-red-100 text-red-700 border border-red-300{% endif %}
+                {% if category == 'success' %}bg-green-100 text-green-700 border border-green-300{% endif %}">
+              <strong>{{ message }}</strong>
             </div>
-        {% endfor %}
-    </div>
-  {% endif %}
-  {% endwith %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
 
-  <form action="{{ url_for('auth.signup') }}" method="post">
-
-    <div>
-      <label for="name">Enter Name</label>
-      <input type="text" name="name" id="name" required />
+    <div class="mb-6 text-4xl font-bold text-center">
+      <div>Sign Up</div>
     </div>
 
-    <div>
-      <label for="password1">Enter Password</label>
-      <input type="password" name="password1" id="password1" required />
+    <!-- Name Field -->
+    <div class="mb-4">
+      <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Full Name</label>
+      <input type="text" name="name" id="name" class="appearance-none bg-transparent border-2 w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none rounded-xl" style="border-color: #66666659;" required placeholder="Enter your Full Name" />
     </div>
 
-    <div>
-      <label for="password2">Re-Enter Password</label>
-      <input type="password" name="password2" id="password2" required />
+    <!-- Password Fields -->
+    <div class="mb-4">
+      <label for="password1" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+      <input type="password" name="password1" id="password1" class="appearance-none bg-transparent border-2 w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none rounded-xl" style="border-color: #66666659;" required placeholder="Enter your Password" />
     </div>
 
-    <div id="producer-fields" class="hidden">
-      <div>
-        <label for="email">Enter Email</label>
-        <input type="email" name="email" id="email" required />
-      </div>
-
-      <div>
-        <label for="producer_id">Producer ID</label>
-        <input type="text" name="producer_id" id="producer_id" required />
-      </div>
+    <div class="mb-6">
+      <label for="password2" class="block text-gray-700 text-sm font-bold mb-2">Re-enter Password</label>
+      <input type="password" name="password2" id="password2" class="appearance-none bg-transparent border-2 w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none rounded-xl" style="border-color: #66666659;" required placeholder="Confirm your Password" />
     </div>
 
-    <div id="consumer-fields" class="hidden">
-      <div>
-        <label for="consumer_id">Consumer ID</label>
-        <input type="text" name="consumer_id" id="consumer_id" required />
-      </div>
-    </div>
-
-    <div>
-      <label for="userrole">Select Role</label>
-      <select name="userrole" id="userrole" onchange="toggleFields()">
+    <!-- Role Selection -->
+    <div class="mb-6">
+      <label for="userrole" class="block text-gray-700 text-sm font-bold mb-2">Select Role</label>
+      <select name="userrole" id="userrole" class="appearance-none bg-transparent border-2 w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none rounded-xl" style="border-color: #66666659;" onchange="toggleFields()">
         <option value="producer">Producer</option>
         <option value="consumer">Consumer</option>
       </select>
     </div>
 
-    <div>
-      <button type="submit">Submit</button>
+    <!-- Producer Fields -->
+    <div id="producer-fields" class="hidden mb-6">
+      <div class="mb-4">
+        <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email Address</label>
+        <input type="email" name="email" id="email" class="appearance-none bg-transparent border-2 w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none rounded-xl" style="border-color: #66666659;" required placeholder="Enter your Email Address" />
+      </div>
+
+      <div class="mb-4">
+        <label for="producer_id" class="block text-gray-700 text-sm font-bold mb-2">Producer ID</label>
+        <input type="text" name="producer_id" id="producer_id" class="appearance-none bg-transparent border-2 w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none rounded-xl" style="border-color: #66666659;" required placeholder="Enter your Producer ID" />
+      </div>
     </div>
 
-    <div>
-      <p>Already have an account? <a href="{{ url_for('auth.login') }}">Login</a></p>
+    <!-- Consumer Fields -->
+    <div id="consumer-fields" class="hidden mb-6">
+      <div class="mb-4">
+        <label for="consumer_id" class="block text-gray-700 text-sm font-bold mb-2">Consumer ID</label>
+        <input type="text" name="consumer_id" id="consumer_id" class="appearance-none bg-transparent border-2 w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none rounded-xl" style="border-color: #66666659;" required placeholder="Enter your Consumer ID" />
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="flex items-center justify-between">
+      <button type="submit" class="bg-black hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-3xl focus:outline-none focus:shadow-outline w-full">
+        Sign Up
+      </button>
+    </div>
+
+    <!-- Already have an account link -->
+    <div class="text-center mt-4">
+      <p class="text-sm text-gray-600">Already have an account? <a href="{{ url_for('auth.login') }}" class="text-blue-500 underline">Login</a></p>
     </div>
 
   </form>
@@ -84,7 +99,6 @@
       producerFields.classList.add("hidden");
       consumerFields.classList.add("hidden");
 
-      // Remove all required fields initially
       document.getElementById("email").removeAttribute("required");
       document.getElementById("producer_id").removeAttribute("required");
       document.getElementById("consumer_id").removeAttribute("required");

@@ -69,7 +69,7 @@ def print_database():
 
 @auth_routes.route("/login", methods=["GET", "POST"])
 def login():
-    print_database()
+    # print_database()
     if request.method == "POST":
         user_id = request.form.get("user_id")
         password = request.form.get("password")

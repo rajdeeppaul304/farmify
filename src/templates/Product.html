@@ -7,18 +7,26 @@
     <table>
       <thead>
         <tr>
-          <th>ID</th>
           <th>Title</th>
           <th>Description</th>
+          <th>Price</th>
+          <th>Image</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody>
         {% for product in products_dict %}
           <tr>
-            <td>{{ product.id }}</td>
             <td>{{ product.title }}</td>
             <td>{{ product.description }}</td>
+            <td>{{ product.price | round(2) }}</td>  <!-- Display price with 2 decimal places -->
+            <td>
+              {% if product.image %}
+                <img src="data:image/jpeg;base64,{{ product.image }}" alt="Product Image" style="width: 100px; height: auto;">
+              {% else %}
+                <p>No Image</p>
+              {% endif %}
+            </td>
             <td>
               <!-- Delete Product Button -->
               <form action="{{ url_for('views.delete_product', product_id=product.id) }}" method="POST">

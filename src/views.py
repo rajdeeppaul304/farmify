@@ -2,6 +2,7 @@ from flask import Blueprint, flash, render_template, redirect, url_for, request,
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 from sqlalchemy.orm import joinedload
+import base64
 
 from .models import Producer, Consumer, Product, CartItem, Cart
 
@@ -46,20 +47,20 @@ def product():
         flash("Producer not found.", "error")
         return redirect(url_for('producer.dashboard'))
     
-    # Fetch all products submitted by the producer, along with the associated consumer details
+    # Fetch all products submitted by the producer
     products = Product.query.filter_by(producer_id=producer.id).all()
-
 
     # Serialize products to a list of dictionaries
     products_dict = [{
         'id': product.id,
         'title': product.title,
         'description': product.description,
+        'price': product.price,  # Add price to the dictionary
+        'image': product.image   # Add image (base64 string) to the dictionary
     } for product in products]
     
     # Pass the serialized products to the template
     return render_template("product.html", products=products, products_dict=products_dict, current_page='index', producer=producer)
-
 
 
 @view_routes.route("/delete_product/<int:product_id>", methods=['POST'])
@@ -110,17 +111,34 @@ def delete_product(product_id):
     return redirect(url_for("views.product"))
 
 
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+# Function to check the file extension
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 @view_routes.route("/submit_product", methods=['GET', 'POST'])
 @login_required
 def submit_product():
     if request.method == 'POST':
         # Get form data
-        # consumer_id = request.form['consumer']  # Consumer ID, not name
         title = request.form['title']
         description = request.form['description']
-        # file = request.files['file']
+        price = float(request.form['price'])  # Convert price to float
+
+        # Process the image upload
+        image = None
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and allowed_file(file.filename):
+                # Convert the image to base64 encoding
+                image_data = file.read()
+                image = base64.b64encode(image_data).decode('utf-8')
+
+        # Get the producer based on the current user
         producer = Producer.query.filter_by(producer_id=current_user.user_id).first()
 
+        # Create a unique product ID
         product_id = f"{current_user.user_id}_{uuid.uuid4()}"
 
         # Create and save the product object to the database
@@ -129,32 +147,18 @@ def submit_product():
             producer_id=producer.id,
             title=title,
             description=description,
+            price=price,
+            image=image  # Save the base64 image if it exists
         )
         db.session.add(new_product)
         db.session.commit()
 
         return redirect(url_for('views.product'))
-    
-    # Fetch all consumers to populate the dropdown
+
+    # Fetch the producer data to pass to the form
     producer = Producer.query.filter_by(producer_id=current_user.user_id).first()
-    products = Product.query.filter_by(producer_id=producer.id).all()
 
-
-    print(producer, products)
-    # Query the Slot table to get consumers who have slots
-    # slots = db.session.query(Slot).filter(Slot.consumer_id != None).all()
-    
-    consumer_data = {}
-
-    # for slot in slots:
-    #     consumer = Consumer.query.filter_by(id = slot.consumer_id).first()
-    #     consumer_data[consumer.id] = {
-    #         'name': consumer.name,
-    #         'slot_count': slot.slot_count,
-    #         'slot_filled': slot.slot_filled
-    #     }
-    
-    return render_template("submit_product.html", consumer_data=consumer_data, producer=producer, current_page='submit_product')
+    return render_template("submit_product.html", producer=producer, current_page='submit_product')
 
 
 @view_routes.route("/withdraw_product/<product_id>", methods=['POST'])

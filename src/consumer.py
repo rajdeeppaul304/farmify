@@ -21,21 +21,23 @@ def consumer_index():
         flash("Consumer not found.", "error")
         return redirect(url_for("views.index"))
 
+    # Fetch all products
     products = Product.query.all()
 
     producers = Producer.query.all()
 
-
-    # Serialize products to a list of dictionaries
+    # Serialize products to include price, image, and producer name
     products_dict = [{
         'id': product.id,
         'title': product.title,
         'description': product.description,
+        'price': product.price,  # Add price
+        'image': product.image,  # Add image (Base64)
         'producer': producers[product.producer_id - 1].name
     } for product in products]
 
-
     return render_template("consumer/product.html", products=products, products_dict=products_dict)
+
 
 
 
@@ -123,7 +125,9 @@ def get_cart_items():
         "product_id": item.product.id,
         "title": item.product.title,
         "description": item.product.description,
-        "quantity": item.quantity
+        "quantity": item.quantity,
+        "price": item.product.price,  # Add product price to the response
+        "image": item.product.image   # Add product image (base64 string) to the response
     } for item in cart_items]
 
-    return jsonify(items)  # Ensure this is returning JSON
+    return jsonify(items)  # Return the cart items as JSON

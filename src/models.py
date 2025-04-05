@@ -47,15 +47,20 @@ class Product(db.Model):
     producer_id = db.Column(db.Integer, db.ForeignKey('producer.id'))
     title = db.Column(db.String(300))
     description = db.Column(db.String(1000))
+    price = db.Column(db.Float)  # Added price column (as a floating point number)
+    image = db.Column(db.Text)   # Added image column (base64 encoded string)
 
     # Relationship to Producer
     producer = db.relationship('Producer', backref='products', lazy='joined')
 
-    def __init__(self, product_id, producer_id, title, description):
+    def __init__(self, product_id, producer_id, title, description, price, image=None):
         self.product_id = product_id
         self.producer_id = producer_id
         self.title = title
         self.description = description
+        self.price = price
+        self.image = image  # If you want to set an image, you can provide the base64 string
+
 
 
 class Login(db.Model, UserMixin):
