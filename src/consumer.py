@@ -66,7 +66,7 @@ def add_to_cart(product_id):
     quantity_added = int(request.form['quantity'])
     print(product_id, quantity_added)
 
-    if quantity_added or quantity_added<0:
+    if quantity_added<0:
         flash("quantity is not correct.", "error")
         return redirect(url_for("consumer.consumer_index"))
 

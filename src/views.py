@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 from sqlalchemy.orm import joinedload
 
-from .models import Producer, Consumer, Product
+from .models import Producer, Consumer, Product, CartItem, Cart
 
 from . import db
 
@@ -59,6 +59,55 @@ def product():
     
     # Pass the serialized products to the template
     return render_template("product.html", products=products, products_dict=products_dict, current_page='index', producer=producer)
+
+
+
+@view_routes.route("/delete_product/<int:product_id>", methods=['POST'])
+@login_required
+def delete_product(product_id):
+    if current_user.user_type == 'consumer':
+        return redirect(url_for("consumer.consumer_index"))
+    
+    # Get the producer object based on the logged-in user
+    producer = Producer.query.filter_by(producer_id=current_user.user_id).first()
+    
+    if not producer:
+        flash("Producer not found.", "error")
+        return redirect(url_for('producer.dashboard'))
+    
+    # Find the product to be deleted
+    product = Product.query.get(product_id)
+    if not product or product.producer_id != producer.id:
+        flash("Product not found or you do not have permission to delete this product.", "error")
+        return redirect(url_for("views.product"))
+    
+    # Step 1: Find all CartItems with the product_id
+    cart_items_to_delete = CartItem.query.filter_by(product_id=product_id).all()
+
+    # Step 2: Store cart_id and cart_item_id for deleted CartItems
+    deleted_cart_items_info = []
+    for cart_item in cart_items_to_delete:
+        deleted_cart_items_info.append({'cart_id': cart_item.cart_id, 'cart_item_id': cart_item.id})
+        db.session.delete(cart_item)
+
+    # Step 3: Commit the deletion of CartItems
+    db.session.commit()
+
+    # Step 4: Now, for each cart, remove the empty CartItems that were deleted
+    for deleted_info in deleted_cart_items_info:
+        cart = Cart.query.get(deleted_info['cart_id'])
+        if cart:
+            # Remove the reference to the deleted CartItem in the cart
+            cart_item_to_remove = CartItem.query.get(deleted_info['cart_item_id'])
+            if cart_item_to_remove in cart.cart_items:
+                cart.cart_items.remove(cart_item_to_remove)
+
+    # Step 5: Finally, delete the product itself
+    db.session.delete(product)
+    db.session.commit()
+
+    flash("Product and associated cart items deleted successfully.", "success")
+    return redirect(url_for("views.product"))
 
 
 @view_routes.route("/submit_product", methods=['GET', 'POST'])
